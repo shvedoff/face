@@ -33,7 +33,6 @@ private:
     cv::VideoCapture camera;
     cv::CascadeClassifier faceHaarCascade;
     bool isnorm;
-    double radius;
     int pulse;
     ImageProcessor my;
     QElapsedTimer ellapser;

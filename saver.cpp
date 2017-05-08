@@ -18,8 +18,9 @@ bool saver::setDir(QString dir){
     return 0;
 
 }
-void saver::setIm(QPixmap *im){
+void saver::setIm(QPixmap *im,QPixmap *im2){
     this->image = im;
+    this->image2 = im2;
 }
 
 void saver::setText(QString text){
@@ -38,6 +39,10 @@ void saver::save(){
     printer.setOutputFormat(QPrinter::PdfFormat);
     QTextCursor cursor(&doc);
     QImage img = (*image).toImage();
+    cursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
+    cursor.insertImage(img);
+
+    img = (*image2).toImage();
     cursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
     cursor.insertImage(img);
    // doc.loadResource(QPixmap, image);

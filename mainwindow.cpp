@@ -12,13 +12,13 @@
 #include "QDebug"
 #include "QImage"
 #define ONE_POINT_OF_DROWING  360.0/523.0
+#define FRAMES 523
 
 
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    radius(1.1),
     isnorm(0),
     pulse(0),
     count_of_frames_processed(0)
@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setGraphicsForForm();
     connectSignalNSlots();
     ui->setupUi(this);
+
 
 }
 
@@ -90,22 +91,15 @@ void MainWindow::pushNew()
 
 
   double key = time.elapsed()/1000.0;
-  static double lastPointKey = 0;
+
 
   QElapsedTimer timer;
-  //timer.start();
+
   ui->widget->graph(0)->addData(key, pulse);
   ui->widget->graph(0)->rescaleValueAxis();
-  lastPointKey = key;
-
-  //ui->lcdNumber->display(pulse);
-
-  //ui->label->setText(QString::number(pulse));
-
   ui->widget->xAxis->setRange(key, 8, Qt::AlignRight);
-  //ui->widget->graph(0)->rescaleAxes();
   ui->widget->replot();
-  //qDebug()<<timer.elapsed();
+
   }
 
 
@@ -123,10 +117,15 @@ void MainWindow::calc_started(){
 }
 
 void MainWindow::collect_started(){
-    ui->widget->clearGraphs();
-    ui->widget->addGraph();
-    ui->widget->graph(0)->setData(calc.FftresultX,calc.FftresultY);
-    ui->widget->replot();
+    camera.release();
+    dataTimer.stop();
+    ui->widget_2->clearGraphs();
+    ui->widget_2->addGraph();
+    ui->widget_2->graph(0)->setData(calc.FftresultX,calc.FftresultY);
+    ui->widget_2->graph(0)->rescaleValueAxis();
+    ui->widget_2->replot();
+    ui->widget->setInteraction(QCP::iRangeDrag,true);
+    ui->widget->setInteraction(QCP::iRangeZoom,true);
     calc.clerContainers();
     //dataTimer.start(50);
 }
@@ -152,27 +151,30 @@ void MainWindow::pasteim(){
     ellapser.start();
     my.fullOneFrameProcess(image);
 
-
-    if (my.isface){
-        count_of_frames_processed+=1;
-        cv::Point center( my.face_x + my.face_r*0.5, my.face_y + my.face_r*0.5 );
-        ellipse(image, center, cv::Size( my.face_r*0.5, my.face_r*0.5), 0, 0, (ONE_POINT_OF_DROWING)*(count_of_frames_processed%586), cv::Scalar( 255, 0, 255 ), 4, 8, 0 );
-    } else {
-    }
-
     QImage im = putImage(image);
-
     ui->label_2->setGeometry(5,5,(im.width()/14)*10,(im.height()/14)*10);
-    //ui->widget->setGeometry(5,5,im.width()/2,im.height()/2);
     ui->label_2->setScaledContents(true);
     QPixmap Picture_to_show((im.width()/14)*10,(im.height()/14)*10);
     QPainter painter(&Picture_to_show);
-    painter.drawPixmap(0,0,QPixmap::fromImage(im.scaledToHeight((im.height()/14)*10)));
+
+
     if (!my.isface){
-        painter.drawPixmap(140,50,QPixmap::fromImage(face.scaledToHeight((int)((double)im.height()/3.5))));
+       painter.drawPixmap(0,0,QPixmap::fromImage(im.scaledToHeight((im.height()/14)*10)));
+       painter.drawPixmap((ui->label_2->width()/2)-(im.height()/25)*5,
+                           (ui->label_2->height()/2-(im.height()/25)*5),
+                           QPixmap::fromImage(face.scaledToHeight((im.height()/25)*10)));
+
+    } else {
+        count_of_frames_processed+=1;
+        cv::Point center( my.face_x + my.face_r*0.5, my.face_y + my.face_r*0.5 );
+        ellipse(image, center, cv::Size( my.face_r*0.5, my.face_r*0.5),
+                270, 0, (ONE_POINT_OF_DROWING)*(count_of_frames_processed%FRAMES),
+                cv::Scalar( 255, 0, 255 ), 4, 8, 0 );
+        im = putImage(image);
+        painter.drawPixmap(0,0,QPixmap::fromImage(im.scaledToHeight((im.height()/14)*10)));
+
 
     }
-
     ui->label_2->setPixmap(Picture_to_show);
 
     //camera.release();
@@ -231,10 +233,12 @@ void MainWindow::on_pushButton_3_clicked()
                                           "./untitled.pdf",
                                           tr("PDF document (*.pdf)")))){
 
-        a.setText(QString::number(pulse));
+        a.setText(QString::number(pulse_norm));
         QPixmap image;
+        QPixmap image2;
         image = ui->widget->toPixmap();
-        a.setIm(&(image));
+        image2 = ui->widget_2->toPixmap();
+        a.setIm(&(image), &(image2));
         a.save();
 
     }

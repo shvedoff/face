@@ -45,7 +45,8 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
-QMAKE_CXXFLAGS+=-O2 \
+QMAKE_CXXFLAGS +=-O2 -std=c++11 -Wall -Wextra \
+
 
 DISTFILES += \
     1.png

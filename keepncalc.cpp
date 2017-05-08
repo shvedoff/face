@@ -13,7 +13,7 @@ KeepNcalc::KeepNcalc(QObject *parent) : QObject(parent)
 
 }
 
-double KeepNcalc::fullSignalProcess(QVector<double> rawSignal) {
+void KeepNcalc::fullSignalProcess() {
     QVector<double> SignalFiletered=filterIt(greenChannel);
     calculateFft(vectorSize,SignalFiletered);
     rateIsReady(findHeartRate());
@@ -29,7 +29,7 @@ void KeepNcalc::addNewData(double green) {
     if (numberOfElements==vectorSize+BL_equ) {
         calculating();
         timer.start();
-        fullSignalProcess(greenChannel);
+        fullSignalProcess();
         qDebug()<<"math took"<<timer.elapsed();
     }
 }
@@ -83,8 +83,8 @@ QVector<double> KeepNcalc::filterIt(QVector<double> toFilt) {
 
 double KeepNcalc::findHeartRate() {
 
-    double max=0;
-    double maxCoord;
+    double max = 0;
+    double maxCoord = 0;
     for (int i=1;   i < FftresultX.size()-1;   i++) {
         if ((FftresultX.at(i) < 4) &&
                 (FftresultX.at(i) >1) &&
@@ -102,15 +102,15 @@ double KeepNcalc::findHeartRate() {
 QVector<double> KeepNcalc::straightIt(QVector<double> toStraight) {
     double aver=0;
     QVector<double> straighted;
-    for (int i=0;i<toStraight.size()-10;i++) {
+    for (int i = 0; i < toStraight.size() - 10; i++) {
         aver=0;
-        for (int j=i;j<i+10;j++) {
-            aver+=toStraight.at(j);
+        for (int j = 0; j < 10; j++) {
+            aver += toStraight.at(j+i);
         }
-        aver=aver/10;
+        aver = aver/10;
         straighted.append(toStraight.at(i)-aver);
     }
-    for (int i=toStraight.size()-10;i<toStraight.size();i++) {
+    for (int i = toStraight.size()-10;i < toStraight.size(); i++) {
         straighted.append(toStraight.at(i)-aver);
     }
 

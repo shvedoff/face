@@ -22,7 +22,7 @@ private:
     const int vectorSize=512;
     QElapsedTimer timer;
 
-    double fullSignalProcess(QVector<double> rawSignal);
+    void fullSignalProcess();
 
     QVector<double> greenChannel;
 
