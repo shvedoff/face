@@ -10,6 +10,7 @@
 #include "saver.h"
 #include "QElapsedTimer"
 #include "QDebug"
+#include "QImage"
 
 
 
@@ -21,14 +22,9 @@ MainWindow::MainWindow(QWidget *parent) :
     pulse(0),
     count_of_frames_processed(0)
 {
-    QObject::connect(&my,SIGNAL(numberIsReady(double)),this,SLOT(newNumberCame(double)));
-
-    QObject::connect(&calc,SIGNAL(calculating()),this,SLOT(calc_started()));
-    QObject::connect(&calc,SIGNAL(data_collect()),this,SLOT(collect_started()));
-    QObject::connect(&calc,SIGNAL(rateIsReady(double)),this,SLOT(showHeartRate(double)));
-
+    setGraphicsForForm();
+    connectSignalNSlots();
     ui->setupUi(this);
-    //faceHaarCascade.load("/home/shvedoff/haarcascade_frontalface_alt.xml");
 
 }
 
@@ -37,12 +33,23 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::connectSignalNSlots() {
+    connect(&dataTimer, SIGNAL(timeout()),this,SLOT(pasteim()));
+    QObject::connect(&my,SIGNAL(numberIsReady(double)),this,SLOT(newNumberCame(double)));
+    QObject::connect(&calc,SIGNAL(calculating()),this,SLOT(calc_started()));
+    QObject::connect(&calc,SIGNAL(data_collect()),this,SLOT(collect_started()));
+    QObject::connect(&calc,SIGNAL(rateIsReady(double)),this,SLOT(showHeartRate(double)));
+}
 
+void MainWindow::setGraphicsForForm() {
+    this->setStyleSheet("background-color:black;");
+    face.load("1.png","PNG");
+}
 
 void MainWindow::on_pushButton_clicked()
 {
    ui->widget->clearGraphs();
-   dataTimer.start(20);
+   dataTimer.start(40);
    Run(ui->widget);
    Runcam();
 
@@ -50,20 +57,18 @@ void MainWindow::on_pushButton_clicked()
 
 
 void MainWindow::Runcam(){
+
     camera.open(0);
 
-    /*if(!camera.isOpened()){
-        throw std::exception;
-    }*/
-
-    //camera.set(CAP_PROP_WHITE_BALANCE_V,1);
-    connect(&dataTimer, SIGNAL(timeout()),this,SLOT(pasteim()));
 }
 
 void MainWindow::Run(QCustomPlot *customPlot){
 
     //camera.set(CV_CAP_PROP_FPS,1);
     customPlot->addGraph();
+    ui->widget->setInteraction(QCP::iRangeDrag,true);
+    ui->widget->setInteraction(QCP::iRangeZoom,true);
+
     customPlot->graph(0)->setPen(QPen(QColor(40, 110, 255)));
 
     QSharedPointer<QCPAxisTickerTime> timeTicker(new QCPAxisTickerTime);
@@ -87,19 +92,19 @@ void MainWindow::pushNew()
   static double lastPointKey = 0;
 
   QElapsedTimer timer;
-  timer.start();
+  //timer.start();
   ui->widget->graph(0)->addData(key, pulse);
   ui->widget->graph(0)->rescaleValueAxis();
   lastPointKey = key;
 
   //ui->lcdNumber->display(pulse);
 
-  ui->label->setText(QString::number(pulse));
+  //ui->label->setText(QString::number(pulse));
 
   ui->widget->xAxis->setRange(key, 8, Qt::AlignRight);
   //ui->widget->graph(0)->rescaleAxes();
   ui->widget->replot();
-  qDebug()<<timer.elapsed();
+  //qDebug()<<timer.elapsed();
   }
 
 
@@ -117,9 +122,12 @@ void MainWindow::calc_started(){
 }
 
 void MainWindow::collect_started(){
-
+    ui->widget->clearGraphs();
+    ui->widget->addGraph();
+    ui->widget->graph(0)->setData(calc.FftresultX,calc.FftresultY);
+    ui->widget->replot();
     calc.clerContainers();
-    dataTimer.start(20);
+    //dataTimer.start(50);
 }
 
 void MainWindow::showHeartRate(double heartRate) {
@@ -132,26 +140,39 @@ void MainWindow::pasteim(){
 
 
     cv::Mat image;
-    camera>>image;
-    //toshow = image;
+    camera.read(image);
+    /*if (!camera.read(image)) {
+        cv::Exception e;
+        throw e;
+        return;
+    }*/
+
     ellapser.start();
     my.fullOneFrameProcess(image);
-    count_of_frames_processed+=1;
-    //double count = 360.0/512.0;
-    //std::cout <<count<<std::endl;
-    //process(image);
-    if (my.isface){
-        cv::Point center( my.face_x + my.face_r*0.5, my.face_y + my.face_r*0.5 );
-        ellipse(image, center, cv::Size( my.face_r*0.5, my.face_r*0.5), 0, 0, (360.0/512.0)*(count_of_frames_processed%512), cv::Scalar( 255, 0, 255 ), 4, 8, 0 );
-    } else {
 
+
+    if (my.isface){
+        count_of_frames_processed+=1;
+        cv::Point center( my.face_x + my.face_r*0.5, my.face_y + my.face_r*0.5 );
+        ellipse(image, center, cv::Size( my.face_r*0.5, my.face_r*0.5), 0, 0, (360.0/523.0)*(count_of_frames_processed%586), cv::Scalar( 255, 0, 255 ), 4, 8, 0 );
+    } else {
     }
 
     QImage im = putImage(image);
 
-    ui->label_2->setGeometry(20,20,im.width()/3,im.height()/3);
+    ui->label_2->setGeometry(5,5,im.width()/2,im.height()/2);
+    //ui->widget->setGeometry(5,5,im.width()/2,im.height()/2);
     ui->label_2->setScaledContents(true);
-    ui->label_2->setPixmap(QPixmap::fromImage(im));
+    QPixmap Picture_to_show(im.width()/2,im.height()/2);
+    QPainter painter(&Picture_to_show);
+    painter.drawPixmap(0,0,QPixmap::fromImage(im.scaledToHeight(im.height()/2)));
+    if (!my.isface){
+        painter.drawPixmap(140,50,QPixmap::fromImage(face.scaledToHeight((int)((double)im.height()/3.5))));
+
+    }
+
+    ui->label_2->setPixmap(Picture_to_show);
+
     //camera.release();
 
 
@@ -199,14 +220,7 @@ QImage MainWindow::putImage(const cv::Mat& mat)
     }
 }
 
-void MainWindow::on_radioButton_toggled(bool checked)
-{
-    if (isnorm){
-        isnorm = 0;
-    } else {
-        isnorm = 1;
-    }
-}
+
 
 void MainWindow::on_pushButton_3_clicked()
 {

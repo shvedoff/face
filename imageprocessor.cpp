@@ -1,4 +1,5 @@
 #include "imageprocessor.h"
+#define MINIMUM_FACE_SIZE 250
 
 ImageProcessor::ImageProcessor()
 {
@@ -12,15 +13,16 @@ void ImageProcessor::fullOneFrameProcess(cv::Mat frame) {
 
     detectFace(frame);
     //findSkinRegions(faceEbat);
-    numberIsReady(calculateGreenAverage(frame));
+    if(isface) {
+        numberIsReady(calculateGreenAverage(frame));
+    }
 
-    //cv::imshow("face",faceEbat);
 }
 
 void ImageProcessor::detectFace(cv::Mat& frame) {
 
     std::vector<cv::Rect> faces;
-    faceHaarCascade.detectMultiScale( frame, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(150, 150) );
+    faceHaarCascade.detectMultiScale( frame, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(MINIMUM_FACE_SIZE, MINIMUM_FACE_SIZE) );
 
     if (faces.size()) {
         face_x = faces[0].x;
@@ -31,10 +33,6 @@ void ImageProcessor::detectFace(cv::Mat& frame) {
      } else {
         isface = 0;
     }
-
-
-
-    //cv::waitKey(50);
 
 }
 
@@ -57,8 +55,6 @@ void ImageProcessor::findSkinRegions(cv::Mat& frame) {
     cv::Mat finalImage;
     frame.copyTo(finalImage,skinMask);
 
-    /*cv::imshow("FinalImage",finalImage);
-    cv::imshow("frame", frame);*/
 }
 
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>827</width>
-    <height>548</height>
+    <height>418</height>
    </rect>
   </property>
   <property name="font">
@@ -22,8 +22,8 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>60</y>
+      <x>100</x>
+      <y>320</y>
       <width>171</width>
       <height>31</height>
      </rect>
@@ -32,24 +32,11 @@
      <string>Начать измерение</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>510</x>
-      <y>230</y>
-      <width>91</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
    <widget class="QCustomPlot" name="widget" native="true">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>230</y>
+      <x>430</x>
+      <y>5</y>
       <width>401</width>
       <height>261</height>
      </rect>
@@ -58,8 +45,8 @@
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>100</y>
+      <x>310</x>
+      <y>320</y>
       <width>171</width>
       <height>31</height>
      </rect>
@@ -73,8 +60,8 @@
      <rect>
       <x>20</x>
       <y>20</y>
-      <width>400</width>
-      <height>200</height>
+      <width>401</width>
+      <height>231</height>
      </rect>
     </property>
     <property name="text">
@@ -84,9 +71,9 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>310</y>
-      <width>67</width>
+      <x>100</x>
+      <y>290</y>
+      <width>46</width>
       <height>17</height>
      </rect>
     </property>
@@ -94,24 +81,11 @@
      <string>Пульс:</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButton">
-    <property name="geometry">
-     <rect>
-      <x>510</x>
-      <y>220</y>
-      <width>171</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Пульс найден</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="pushButton_3">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>140</y>
+      <x>520</x>
+      <y>320</y>
       <width>171</width>
       <height>31</height>
      </rect>
@@ -123,14 +97,14 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>600</x>
-      <y>310</y>
+      <x>160</x>
+      <y>290</y>
       <width>67</width>
       <height>17</height>
      </rect>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string/>
     </property>
    </widget>
   </widget>

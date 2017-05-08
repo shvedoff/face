@@ -26,6 +26,8 @@ public:
     ~MainWindow();
 
 private:
+    void connectSignalNSlots();
+    void setGraphicsForForm();
     Ui::MainWindow *ui;
     QTimer dataTimer;
     cv::VideoCapture camera;
@@ -38,6 +40,7 @@ private:
     KeepNcalc calc;
     double pulse_norm;
     int count_of_frames_processed;
+    QImage face;
 
 private slots:
     void newNumberCame(double num);
@@ -49,7 +52,7 @@ private slots:
     void on_pushButton_2_clicked();
     QImage putImage(const cv::Mat& mat);
     void pasteim();
-    void on_radioButton_toggled(bool checked);
+
     void on_pushButton_3_clicked();
     void calc_started();
     void collect_started();

@@ -44,3 +44,8 @@ HEADERS  += mainwindow.h \
     keepncalc.h
 
 FORMS    += mainwindow.ui
+
+QMAKE_CXXFLAGS+=-O2 \
+
+DISTFILES += \
+    1.png

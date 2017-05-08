@@ -4,6 +4,7 @@
 #include <QVector>
 #include <QObject>
 #include <fftw3.h>
+#include <QElapsedTimer>
 
 
 class KeepNcalc : public QObject
@@ -14,9 +15,12 @@ public:
     explicit KeepNcalc(QObject *parent = 0);
     void addNewData(double green);
     void clerContainers();
+    QVector<double> FftresultY;
+    QVector<double> FftresultX;
 
 private:
-    const int vectorSize=64;
+    const int vectorSize=512;
+    QElapsedTimer timer;
 
     double fullSignalProcess(QVector<double> rawSignal);
 
@@ -24,8 +28,8 @@ private:
 
     int numberOfElements;
 
-    QVector<double> FftresultY;
-    QVector<double> FftresultX;
+//    QVector<double> FftresultY;
+//    QVector<double> FftresultX;
 
     QVector<double> filterIt(QVector<double> toFilt);
     QVector<double> straightIt(QVector<double> toStraight);

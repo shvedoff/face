@@ -3,6 +3,8 @@
 #include <fftw3.h>
 #include <math.h>
 #include <fir_tuk74.h>
+#include "iostream"
+#include "qdebug.h"
 
 KeepNcalc::KeepNcalc(QObject *parent) : QObject(parent)
 {
@@ -19,13 +21,16 @@ double KeepNcalc::fullSignalProcess(QVector<double> rawSignal) {
 }
 
 void KeepNcalc::addNewData(double green) {
-
+    qDebug()<<"taking pic took "<<timer.elapsed();
+    timer.start();
     greenChannel.append(green);
     numberOfElements++;
-
+    //std::cout<<numberOfElements<< "num"<<std::endl;
     if (numberOfElements==vectorSize+BL_equ) {
         calculating();
+        timer.start();
         fullSignalProcess(greenChannel);
+        qDebug()<<"math took"<<timer.elapsed();
     }
 }
 
@@ -80,14 +85,17 @@ double KeepNcalc::findHeartRate() {
 
     double max=0;
     double maxCoord;
-    for (int i=0;   i < FftresultX.size();   i++) {
-        if ((FftresultX.at(i) < 4) && (FftresultX.at(i) >1) && (FftresultY.at(i) > max)) {
+    for (int i=1;   i < FftresultX.size()-1;   i++) {
+        if ((FftresultX.at(i) < 4) &&
+                (FftresultX.at(i) >1) &&
+                (FftresultY.at(i) > max) ) {
             maxCoord=FftresultX.at(i);
             max=FftresultY.at(i);
         }
     }
 
-    return maxCoord*60*1.53;
+    qDebug()<<"freq="<<maxCoord;
+    return maxCoord*60 / 1.57;
 }
 
 
@@ -137,7 +145,7 @@ void KeepNcalc::calculateFft(int n,QVector<double> toCalc) {
         imaginary = imaginary * imaginary;
         FftresultY.append(sqrt(real + imaginary));
 
-        FftresultX.append((i * (1 / (n * 20 * 0.001))));
+        FftresultX.append((i * (1 / (n * 40 * 0.001))));
     }
 
 
