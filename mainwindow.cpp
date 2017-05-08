@@ -11,6 +11,7 @@
 #include "QElapsedTimer"
 #include "QDebug"
 #include "QImage"
+#define ONE_POINT_OF_DROWING  360.0/523.0
 
 
 
@@ -140,6 +141,7 @@ void MainWindow::pasteim(){
 
 
     cv::Mat image;
+
     camera.read(image);
     /*if (!camera.read(image)) {
         cv::Exception e;
@@ -154,18 +156,18 @@ void MainWindow::pasteim(){
     if (my.isface){
         count_of_frames_processed+=1;
         cv::Point center( my.face_x + my.face_r*0.5, my.face_y + my.face_r*0.5 );
-        ellipse(image, center, cv::Size( my.face_r*0.5, my.face_r*0.5), 0, 0, (360.0/523.0)*(count_of_frames_processed%586), cv::Scalar( 255, 0, 255 ), 4, 8, 0 );
+        ellipse(image, center, cv::Size( my.face_r*0.5, my.face_r*0.5), 0, 0, (ONE_POINT_OF_DROWING)*(count_of_frames_processed%586), cv::Scalar( 255, 0, 255 ), 4, 8, 0 );
     } else {
     }
 
     QImage im = putImage(image);
 
-    ui->label_2->setGeometry(5,5,im.width()/2,im.height()/2);
+    ui->label_2->setGeometry(5,5,(im.width()/14)*10,(im.height()/14)*10);
     //ui->widget->setGeometry(5,5,im.width()/2,im.height()/2);
     ui->label_2->setScaledContents(true);
-    QPixmap Picture_to_show(im.width()/2,im.height()/2);
+    QPixmap Picture_to_show((im.width()/14)*10,(im.height()/14)*10);
     QPainter painter(&Picture_to_show);
-    painter.drawPixmap(0,0,QPixmap::fromImage(im.scaledToHeight(im.height()/2)));
+    painter.drawPixmap(0,0,QPixmap::fromImage(im.scaledToHeight((im.height()/14)*10)));
     if (!my.isface){
         painter.drawPixmap(140,50,QPixmap::fromImage(face.scaledToHeight((int)((double)im.height()/3.5))));
 
