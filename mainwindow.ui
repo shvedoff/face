@@ -68,43 +68,17 @@
      <string/>
     </property>
    </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>380</y>
-      <width>46</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Пульс:</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="pushButton_3">
     <property name="geometry">
      <rect>
-      <x>460</x>
-      <y>410</y>
+      <x>140</x>
+      <y>450</y>
       <width>171</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
      <string>Записать в файл</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>380</y>
-      <width>67</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
     </property>
    </widget>
    <widget class="QCustomPlot" name="widget_2" native="true">
@@ -117,6 +91,16 @@
      </rect>
     </property>
    </widget>
+   <widget class="QLCDNumber" name="lcdNumber">
+    <property name="geometry">
+     <rect>
+      <x>700</x>
+      <y>360</y>
+      <width>141</width>
+      <height>81</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -124,7 +108,7 @@
      <x>0</x>
      <y>0</y>
      <width>940</width>
-     <height>25</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>

@@ -1,10 +1,13 @@
 #include "imageprocessor.h"
+#include "QMessageBox"
+
 #define MINIMUM_FACE_SIZE 250
 
 ImageProcessor::ImageProcessor()
 {
     isface = 0;
     faceHaarCascade.load("/home/shvedoff/haarcascade_frontalface_alt.xml");
+
 }
 
 
@@ -22,12 +25,16 @@ void ImageProcessor::fullOneFrameProcess(cv::Mat frame) {
 void ImageProcessor::detectFace(cv::Mat& frame) {
 
     std::vector<cv::Rect> faces;
+    if (faceHaarCascade.empty()) {
+        isface=0;
+        return;
+    }
     faceHaarCascade.detectMultiScale( frame, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(MINIMUM_FACE_SIZE, MINIMUM_FACE_SIZE) );
 
     if (faces.size()) {
         face_x = faces[0].x;
         face_y = faces[0].y;
-        face_r = faces[0].width;
+        face_r = faces[0].width/2;
         isface = 1;
         frame=frame(faces[0]);
      } else {

@@ -28,9 +28,6 @@ private:
 
     int numberOfElements;
 
-//    QVector<double> FftresultY;
-//    QVector<double> FftresultX;
-
     QVector<double> filterIt(QVector<double> toFilt);
     QVector<double> straightIt(QVector<double> toStraight);
     QVector<double> averFilt(QVector<double> toFilt,int order);

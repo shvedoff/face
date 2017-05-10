@@ -12,6 +12,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/objdetect/objdetect.hpp>
 #include "keepncalc.h"
+#include "qcustomplot.h"
 
 namespace Ui {
 class MainWindow;
@@ -28,6 +29,7 @@ public:
 private:
     void connectSignalNSlots();
     void setGraphicsForForm();
+    void setGraphicsForPlots(QCustomPlot *customPlot);
     Ui::MainWindow *ui;
     QTimer dataTimer;
     cv::VideoCapture camera;
@@ -40,6 +42,10 @@ private:
     double pulse_norm;
     int count_of_frames_processed;
     QImage face;
+    QCPBars *bars1;
+
+    void savePdfReport();
+
 
 private slots:
     void newNumberCame(double num);

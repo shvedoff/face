@@ -14,7 +14,7 @@ bool saver::setDir(QString dir){
     if (dir.length()==0){
         return 1;
     }
-    this->dir=dir;
+    this->dir = dir;
     return 0;
 
 }
@@ -26,8 +26,8 @@ void saver::setIm(QPixmap *im,QPixmap *im2){
 void saver::setText(QString text){
     this->text = "<p>Дата: ";
     std::time_t result = std::time(0);
-    this ->text +=QString::fromStdString(std::asctime(std::localtime(&result)))+"<\p>";
-    this ->text +="<p>Пульс = "+text+"<\p>";
+    this ->text += QString::fromStdString(std::asctime(std::localtime(&result)))+"<\p>";
+    this ->text += "<p>Пульс = "+text+"<\p>";
 
 
 }

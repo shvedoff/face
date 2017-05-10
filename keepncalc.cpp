@@ -6,6 +6,9 @@
 #include "iostream"
 #include "qdebug.h"
 
+#define     PI_POP 1.57
+#define     SECONDS 60
+
 KeepNcalc::KeepNcalc(QObject *parent) : QObject(parent)
 {
     greenChannel.clear();
@@ -21,7 +24,7 @@ void KeepNcalc::fullSignalProcess() {
 }
 
 void KeepNcalc::addNewData(double green) {
-    qDebug()<<"taking pic took "<<timer.elapsed();
+    //qDebug()<<"taking pic took "<<timer.elapsed();
     timer.start();
     greenChannel.append(green);
     numberOfElements++;
@@ -30,52 +33,43 @@ void KeepNcalc::addNewData(double green) {
         calculating();
         timer.start();
         fullSignalProcess();
-        qDebug()<<"math took"<<timer.elapsed();
+        greenChannel.remove(0);
+        numberOfElements--;
+        //qDebug()<<"math took"<<timer.elapsed();
     }
 }
 
 
 QVector<double> KeepNcalc::averFilt(QVector<double> toFilt, int order) {
     QVector<double> filtered;
+    for (int i = order/2 + 1;i < toFilt.size()-order/2; i++) {
 
-
-
-    for (int i=order/2+1;i<toFilt.size()-order/2;i++) {
-
-        double aver=0;
-        for (int j=i-order/2; j<i+order/2; j++) {
-            aver+=toFilt.at(j);
+        double aver = 0;
+        for (int j = i-order/2; j < i + order/2; j++) {
+            aver += toFilt.at(j);
         }
-        aver=aver/order;
+        aver = aver/order;
         filtered.append(aver);
-
     }
-
-
     return filtered;
 }
 
 QVector<double> KeepNcalc::filterIt(QVector<double> toFilt) {
-
-    int num=0;
+    int num = 0;
     int B_filter_len_div2=BL_equ/2;
 
     QVector<double> filtered;
-
-
     for (int i = B_filter_len_div2; i<toFilt.size() - B_filter_len_div2;  i++) {
 
-            double filt=0;
+            double filt = 0;
 
-            for (int j=0;j<BL_equ;j++) {
+            for (int j = 0; j < BL_equ; j++) {
                 filt += toFilt.at(i-B_filter_len_div2+j) * B_equ[j];
             }
 
             filtered.append(filt);
             num++;
     }
-
-
     return filtered;
 }
 
@@ -95,12 +89,12 @@ double KeepNcalc::findHeartRate() {
     }
 
     qDebug()<<"freq="<<maxCoord;
-    return maxCoord*60 / 1.57;
+    return maxCoord* SECONDS / PI_POP;
 }
 
 
 QVector<double> KeepNcalc::straightIt(QVector<double> toStraight) {
-    double aver=0;
+    double aver = 0;
     QVector<double> straighted;
     for (int i = 0; i < toStraight.size() - 10; i++) {
         aver=0;
@@ -147,16 +141,12 @@ void KeepNcalc::calculateFft(int n,QVector<double> toCalc) {
 
         FftresultX.append((i * (1 / (n * 40 * 0.001))));
     }
-
-
 }
 
 
 void KeepNcalc::clerContainers() {
 
-    greenChannel.clear();
     FftresultY.clear();
     FftresultX.clear();
 
-    numberOfElements=0;
 }

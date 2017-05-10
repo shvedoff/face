@@ -7,6 +7,10 @@
 QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
+
+TARGET = projj
+TEMPLATE = app
+
 INCLUDEPATH += /usr/local/include/opencv2
 LIBS += -L/usr/local/lib
 LIBS += -lopencv_core
@@ -22,10 +26,6 @@ LIBS += -lopencv_videoio
 
 INCLUDEPATH += /usr/local/include/
 LIBS += -lfftw3
-
-TARGET = projj
-TEMPLATE = app
-
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -46,6 +46,11 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui
 
 QMAKE_CXXFLAGS +=-O2 -std=c++11 -Wall -Wextra \
+
+
+
+QT       += core gui
+
 
 
 DISTFILES += \
